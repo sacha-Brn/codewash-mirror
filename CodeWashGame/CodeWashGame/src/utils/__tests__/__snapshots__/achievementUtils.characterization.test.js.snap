@@ -1,0 +1,109 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`catalogue des succès > liste des identifiants et type (palier / unique) 1`] = `
+[
+  [
+    "phantom_hunter",
+    true,
+  ],
+  [
+    "combined_levels",
+    true,
+  ],
+  [
+    "skill_mastery",
+    true,
+  ],
+  [
+    "first_steps",
+    false,
+  ],
+  [
+    "level_up",
+    false,
+  ],
+  [
+    "fashion_forward",
+    false,
+  ],
+  [
+    "framed",
+    false,
+  ],
+  [
+    "ouch",
+    false,
+  ],
+  [
+    "dragon_slayer",
+    false,
+  ],
+  [
+    "mini_menace",
+    false,
+  ],
+  [
+    "mini_master",
+    false,
+  ],
+  [
+    "world_ender",
+    false,
+  ],
+  [
+    "monster_manual",
+    false,
+  ],
+  [
+    "perfectionist",
+    false,
+  ],
+  [
+    "speed_demon",
+    false,
+  ],
+  [
+    "dedicated",
+    false,
+  ],
+  [
+    "high_roller",
+    false,
+  ],
+  [
+    "badge_collector",
+    false,
+  ],
+  [
+    "full_set",
+    false,
+  ],
+]
+`;
+
+exports[`détection des nouveaux succès (toasts) > getNewlyUnlockedAchievements : ce qui passe de verrouillé à débloqué 1`] = `
+[
+  "phantom_hunter",
+  "first_steps",
+  "level_up",
+]
+`;
+
+exports[`getDefaultStats > structure initiale des statistiques 1`] = `
+{
+  "achievementsUnlocked": [],
+  "battlesThisSession": 0,
+  "borderChanges": 0,
+  "loginDates": [],
+  "perfectMemoryGames": 0,
+  "phantomsCaught": 0,
+  "themeChanges": 0,
+  "totalBossesDefeated": 0,
+  "totalDeaths": 0,
+  "totalMinibossesDefeated": 0,
+  "totalMobsDefeated": 0,
+  "uniqueBossesDefeated": [],
+  "uniqueMinibossesDefeated": [],
+  "uniqueMobsDefeated": [],
+}
+`;
