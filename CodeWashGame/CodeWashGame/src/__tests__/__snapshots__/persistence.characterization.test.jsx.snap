@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`persistance localStorage (comportement actuel) > premier lancement : écrit les clés de sauvegarde 1`] = `
+[
+  "borderColor_p1",
+  "borderEffect_p1",
+  "currentProfile_v1",
+  "heroParentStatus_v1",
+  "heroProfileNames_v1",
+  "heroSkills_v23_p1",
+]
+`;
+
+exports[`sauvegardes corrompues (comportement actuel) > JSON corrompu : comportement actuel figé (parser fragile) 1`] = `"SyntaxError"`;
