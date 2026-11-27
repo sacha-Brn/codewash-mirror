@@ -1,0 +1,46 @@
+# Fichiers générés ou non concernés
+node_modules/
+dist/
+release/
+coverage/
+public/
+package.json
+package-lock.json
+index.html
+*.md
+
+# ------------------------------------------------------------------
+# CLIQUET DE FORMATAGE (voir docs/DEBT.md, DEBT-10)
+# Fichiers d'origine pas encore formatés. Règle : quand tu modifies un de
+# ces fichiers, lance `npm run format`, puis retire sa ligne ici.
+# Cette liste ne doit que RÉTRÉCIR : n'y ajoute jamais de nouveau fichier.
+# ------------------------------------------------------------------
+electron/main.cjs
+postcss.config.js
+src/App.jsx
+src/components/drawers/CosmeticsDrawer.jsx
+src/components/drawers/MenuDrawer.jsx
+src/components/drawers/MenuDrawer_old.jsx
+src/components/drawers/SettingsDrawer.jsx
+src/components/modals/BugReportModal.jsx
+src/components/modals/ResetModal.jsx
+src/components/PhantomEvent.jsx
+src/components/profile/ProfileCard.jsx
+src/components/skills/SkillCard.jsx
+src/components/ui/AchievementToast.jsx
+src/components/ui/GlobalStyles.jsx
+src/components/ui/MobWithAura.jsx
+src/components/ui/ParentalVerificationModal.jsx
+src/components/ui/PixelHeart.jsx
+src/components/ui/SafeImage.jsx
+src/constants/achievements.js
+src/constants/assets.js
+src/constants/gameData.jsx
+src/index.css
+src/main.jsx
+src/utils/achievementUtils.js
+src/utils/gameUtils.js
+src/utils/mobDisplayUtils.js
+src/utils/soundManager.js
+tailwind.config.js
+.github/workflows/build-exe.yml
