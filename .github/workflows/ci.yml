@@ -1,10 +1,23 @@
 name: CI
 
+# Référence de qualité du projet : aucune PR n'est mergée si une étape échoue.
+# Le job s'appelle `build` : c'est ce nom qui est exigé par le ruleset de `main`.
+# Ne pas le renommer sans mettre à jour le ruleset (Settings → Rules → Rulesets).
+
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
+
+# Un nouveau push sur une PR annule l'exécution précédente devenue inutile.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write # commentaire de couverture sur la PR
 
 jobs:
   build:
@@ -14,14 +27,48 @@ jobs:
         working-directory: CodeWashGame/CodeWashGame
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: CodeWashGame/CodeWashGame/package-lock.json
+
       - name: Install dependencies
         run: npm ci
-      - name: Lint
-        run: npm run lint --if-present
+
+      # Analyse statique du code : erreurs ET avertissements bloquent.
+      - name: Lint (ESLint)
+        run: npm run lint -- --max-warnings=0
+
+      # Format : nouveaux fichiers obligatoirement formatés (cliquet, voir DEBT-10).
+      - name: Format check (Prettier)
+        run: npm run format:check
+
+      # Tests + couverture : échoue si un test casse ou si un seuil n'est pas atteint
+      # (seuils définis dans vite.config.js).
+      - name: Tests and coverage
+        run: npm run test:coverage
+
+      # Rapport de couverture commenté directement sur la PR (avec les seuils).
+      - name: Coverage report on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          working-directory: CodeWashGame/CodeWashGame
+
+      # Rapport HTML téléchargeable depuis l'onglet Actions (Artifacts).
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: CodeWashGame/CodeWashGame/coverage/
+          retention-days: 14
+
       - name: Build
         run: npm run build
+
+      # Vulnérabilités connues dans ce qui est livré au joueur (hors outillage de dev).
+      - name: Security audit (production dependencies)
+        run: npm audit --omit=dev --audit-level=high
