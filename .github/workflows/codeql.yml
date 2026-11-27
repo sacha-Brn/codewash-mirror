@@ -1,0 +1,39 @@
+name: CodeQL
+
+# Analyse statique de sécurité (GitHub CodeQL) sur le code JavaScript/React.
+# Les alertes apparaissent dans l'onglet Security → Code scanning.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1' # chaque lundi : détecte les nouvelles règles sur du code inchangé
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+          # Ne pas analyser les dépendances ni les fichiers générés.
+          config: |
+            paths:
+              - CodeWashGame/CodeWashGame/src
+              - CodeWashGame/CodeWashGame/electron
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:javascript-typescript'
