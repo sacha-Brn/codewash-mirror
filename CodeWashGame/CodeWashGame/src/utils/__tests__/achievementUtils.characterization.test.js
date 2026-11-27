@@ -1,9 +1,16 @@
 import { describe, it, expect, vi } from 'vitest';
 import { ACHIEVEMENTS } from '../../constants/achievements';
 import {
-  getDefaultStats, isAchievementUnlocked, getCurrentTier, getNextTier,
-  getTierProgress, getNewlyUnlockedAchievements, getNewTierAchievements,
-  addUniqueToArray, recordLoginDate, getAchievementDisplayName,
+  getDefaultStats,
+  isAchievementUnlocked,
+  getCurrentTier,
+  getNextTier,
+  getTierProgress,
+  getNewlyUnlockedAchievements,
+  getNewTierAchievements,
+  addUniqueToArray,
+  recordLoginDate,
+  getAchievementDisplayName,
 } from '../achievementUtils';
 
 // Tests de CARACTÉRISATION : ils figent le comportement ACTUEL, bugs compris.
@@ -39,17 +46,24 @@ describe('isAchievementUnlocked', () => {
 
   it('succès unique : first_steps après le premier ennemi vaincu', () => {
     expect(isAchievementUnlocked('first_steps', stats(), skillsAt(1))).toBe(false);
-    expect(isAchievementUnlocked('first_steps', stats({ totalMobsDefeated: 1 }), skillsAt(1))).toBe(true);
+    expect(isAchievementUnlocked('first_steps', stats({ totalMobsDefeated: 1 }), skillsAt(1))).toBe(
+      true,
+    );
   });
 
   it('succès à paliers : débloqué dès le palier 1 (phantom_hunter = 5 fantômes)', () => {
-    expect(isAchievementUnlocked('phantom_hunter', stats({ phantomsCaught: 4 }), skillsAt(1))).toBe(false);
-    expect(isAchievementUnlocked('phantom_hunter', stats({ phantomsCaught: 5 }), skillsAt(1))).toBe(true);
+    expect(isAchievementUnlocked('phantom_hunter', stats({ phantomsCaught: 4 }), skillsAt(1))).toBe(
+      false,
+    );
+    expect(isAchievementUnlocked('phantom_hunter', stats({ phantomsCaught: 5 }), skillsAt(1))).toBe(
+      true,
+    );
   });
 
   it('état de départ : aucun succès débloqué pour un nouveau joueur', () => {
-    const unlocked = Object.keys(ACHIEVEMENTS)
-      .filter((id) => isAchievementUnlocked(id, stats(), skillsAt(1)));
+    const unlocked = Object.keys(ACHIEVEMENTS).filter((id) =>
+      isAchievementUnlocked(id, stats(), skillsAt(1)),
+    );
     expect(unlocked).toEqual([]);
   });
 });
@@ -106,12 +120,18 @@ describe('détection des nouveaux succès (toasts)', () => {
   it('getNewTierAchievements : franchissement de palier', () => {
     const before = stats({ phantomsCaught: 9 });
     const after = stats({ phantomsCaught: 10 });
-    expect(getNewTierAchievements(before, after, skillsAt(1), skillsAt(1)))
-      .toEqual([{ achievementId: 'phantom_hunter', tierIndex: 1 }]);
+    expect(getNewTierAchievements(before, after, skillsAt(1), skillsAt(1))).toEqual([
+      { achievementId: 'phantom_hunter', tierIndex: 1 },
+    ]);
   });
 
   it('getNewTierAchievements : saut de plusieurs paliers -> renvoie le plus haut', () => {
-    const r = getNewTierAchievements(stats(), stats({ phantomsCaught: 30 }), skillsAt(1), skillsAt(1));
+    const r = getNewTierAchievements(
+      stats(),
+      stats({ phantomsCaught: 30 }),
+      skillsAt(1),
+      skillsAt(1),
+    );
     expect(r).toEqual([{ achievementId: 'phantom_hunter', tierIndex: 4 }]);
   });
 });
@@ -162,8 +182,9 @@ describe('getAchievementDisplayName', () => {
   });
 
   it('succès à paliers -> nom du palier atteint', () => {
-    expect(getAchievementDisplayName('phantom_hunter', stats({ phantomsCaught: 10 }), skillsAt(1)))
-      .toBe('Silver Ghost Buster');
+    expect(
+      getAchievementDisplayName('phantom_hunter', stats({ phantomsCaught: 10 }), skillsAt(1)),
+    ).toBe('Silver Ghost Buster');
   });
 
   it('identifiant inconnu -> chaîne vide', () => {

@@ -4,12 +4,15 @@ import App from '../App';
 
 // jsdom n'a ni Audio, ni AudioContext, ni reconnaissance vocale : on les remplace.
 beforeEach(() => {
-  vi.stubGlobal('Audio', vi.fn(function () {
-    this.play = vi.fn(() => Promise.resolve());
-    this.pause = vi.fn();
-    this.addEventListener = vi.fn();
-    this.removeEventListener = vi.fn();
-  }));
+  vi.stubGlobal(
+    'Audio',
+    vi.fn(function () {
+      this.play = vi.fn(() => Promise.resolve());
+      this.pause = vi.fn();
+      this.addEventListener = vi.fn();
+      this.removeEventListener = vi.fn();
+    }),
+  );
   vi.useFakeTimers({ shouldAdvanceTime: true });
   vi.setSystemTime(new Date('2026-01-15T10:00:00Z'));
 });
@@ -41,8 +44,14 @@ describe('persistance localStorage (comportement actuel)', () => {
     render(<App />);
     const save = JSON.parse(localStorage.getItem('heroSkills_v23_p1'));
     expect(Object.keys(save).sort()).toEqual(['skills', 'stats', 'theme']);
-    expect(Object.keys(save.skills).sort())
-      .toEqual(['cleaning', 'math', 'memory', 'patterns', 'reading', 'writing']);
+    expect(Object.keys(save.skills).sort()).toEqual([
+      'cleaning',
+      'math',
+      'memory',
+      'patterns',
+      'reading',
+      'writing',
+    ]);
     expect(save.theme).toBe('minecraft');
   });
 
@@ -117,7 +126,11 @@ describe('sauvegardes corrompues (comportement actuel)', () => {
   it('JSON corrompu : comportement actuel figé (parser fragile)', () => {
     localStorage.setItem('heroProfileNames_v1', '{pas du json');
     let error = null;
-    try { render(<App />); } catch (e) { error = e; }
+    try {
+      render(<App />);
+    } catch (e) {
+      error = e;
+    }
     expect(error?.name ?? 'pas de crash').toMatchSnapshot();
   });
 });

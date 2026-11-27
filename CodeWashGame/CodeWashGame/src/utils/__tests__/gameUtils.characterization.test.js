@@ -1,7 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
-  getEncounterType, calculateDamage, calculateMobHealth, getExpectedDifficulty,
-  calculateXPReward, calculateXPToLevel, generateMathProblem, getMobForSkill,
+  getEncounterType,
+  calculateDamage,
+  calculateMobHealth,
+  getExpectedDifficulty,
+  calculateXPReward,
+  calculateXPToLevel,
+  generateMathProblem,
+  getMobForSkill,
   getItemsForLength,
 } from '../gameUtils';
 
@@ -10,8 +16,14 @@ import {
 
 describe('getEncounterType (cycle de 20 niveaux)', () => {
   it.each([
-    [1, 'hostile'], [9, 'hostile'], [10, 'miniboss'], [11, 'hostile'],
-    [20, 'boss'], [21, 'hostile'], [30, 'miniboss'], [40, 'boss'],
+    [1, 'hostile'],
+    [9, 'hostile'],
+    [10, 'miniboss'],
+    [11, 'hostile'],
+    [20, 'boss'],
+    [21, 'hostile'],
+    [30, 'miniboss'],
+    [40, 'boss'],
   ])('niveau %i -> %s', (level, expected) => {
     expect(getEncounterType(level)).toBe(expected);
   });
@@ -23,7 +35,8 @@ describe('progression (golden master)', () => {
     for (let level = 1; level <= 160; level += 7) {
       for (let diff = 1; diff <= 7; diff++) {
         table.push({
-          level, diff,
+          level,
+          diff,
           damage: calculateDamage(level, diff),
           hp: calculateMobHealth(diff),
           expected: getExpectedDifficulty(level),
