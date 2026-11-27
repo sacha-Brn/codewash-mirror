@@ -104,8 +104,8 @@ describe('migration de l’ancienne sauvegarde heroSkills_v23 (profil 1)', () =>
 });
 
 describe('sauvegardes corrompues (comportement actuel)', () => {
-  // BUG figé : la sauvegarde illisible est remplacée par une partie neuve, sans avertir
-  // le joueur -> perte de progression silencieuse.
+  // BUG : la sauvegarde illisible est remplacée par une nouvelle partie
+  // -> perte de progression pour le joueur, sans avertissement.
   it('heroSkills_v23_p1 corrompu : pas de crash, mais la sauvegarde est écrasée', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     localStorage.setItem('heroSkills_v23_p1', '{pas du json');
