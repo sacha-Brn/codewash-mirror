@@ -55,14 +55,14 @@ describe('persistance localStorage (comportement actuel)', () => {
     expect(save.theme).toBe('minecraft');
   });
 
-  // Comportement figé : au premier lancement, loadTheme/loadStats font JSON.parse(null)
-  // puis lisent .theme / .stats sur null -> TypeError attrapée et loguée.
-  it('premier lancement : avertissements console (erreurs attrapées)', () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  // DEBT-03 (corrigé) : loadTheme/loadStats faisaient JSON.parse(null) puis lisaient .theme
+  // sur null -> TypeError attrapée et loguée à chaque premier lancement.
+  it('premier lancement : aucun avertissement ni erreur console', () => {
+    const warn = vi.spyOn(console, 'warn');
+    const error = vi.spyOn(console, 'error');
     render(<App />);
-    const messages = warn.mock.calls.map((c) => c[0]);
-    expect(messages).toContain('Failed to parse theme:');
-    expect(messages).toContain('Failed to parse stats:');
+    expect(warn).not.toHaveBeenCalled();
+    expect(error).not.toHaveBeenCalled();
   });
 });
 
@@ -112,25 +112,31 @@ describe('migration de l’ancienne sauvegarde heroSkills_v23 (profil 1)', () =>
   });
 });
 
-describe('sauvegardes corrompues (comportement actuel)', () => {
-  // BUG : la sauvegarde illisible est remplacée par une nouvelle partie
-  // -> perte de progression pour le joueur, sans avertissement.
-  it('heroSkills_v23_p1 corrompu : pas de crash, mais la sauvegarde est écrasée', () => {
-    vi.spyOn(console, 'warn').mockImplementation(() => {});
+describe('sauvegardes corrompues', () => {
+  // DEBT-01 (corrigé) : la sauvegarde illisible était écrasée par une nouvelle partie, sans copie.
+  it('heroSkills_v23_p1 corrompu : nouvelle partie, mais copie de secours conservée et signalée', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
     localStorage.setItem('heroSkills_v23_p1', '{pas du json');
     render(<App />);
     const save = JSON.parse(localStorage.getItem('heroSkills_v23_p1'));
     expect(save.skills.math.level).toBe(1);
+    expect(localStorage.getItem('heroSkills_v23_p1_corrupted')).toBe('{pas du json');
+    expect(error).toHaveBeenCalledTimes(1);
   });
 
-  it('JSON corrompu : comportement actuel figé (parser fragile)', () => {
-    localStorage.setItem('heroProfileNames_v1', '{pas du json');
-    let error = null;
-    try {
-      render(<App />);
-    } catch (e) {
-      error = e;
-    }
-    expect(error?.name ?? 'pas de crash').toMatchSnapshot();
-  });
+  // DEBT-02 (corrigé) : un JSON illisible faisait planter App (SyntaxError, écran blanc).
+  it.each(['heroProfileNames_v1', 'heroParentStatus_v1'])(
+    '%s corrompu : le jeu démarre avec les valeurs par défaut',
+    (key) => {
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      localStorage.setItem(key, '{pas du json');
+      expect(() => render(<App />)).not.toThrow();
+      expect(localStorage.getItem(`${key}_corrupted`)).toBe('{pas du json');
+      expect(JSON.parse(localStorage.getItem(key))).toEqual(
+        key === 'heroProfileNames_v1'
+          ? { 1: 'Player 1', 2: 'Player 2', 3: 'Player 3' }
+          : { 1: false, 2: false, 3: false },
+      );
+    },
+  );
 });

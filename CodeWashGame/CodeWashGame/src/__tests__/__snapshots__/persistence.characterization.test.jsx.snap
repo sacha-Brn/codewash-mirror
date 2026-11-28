@@ -10,5 +10,3 @@ exports[`persistance localStorage (comportement actuel) > premier lancement : é
   "heroSkills_v23_p1",
 ]
 `;
-
-exports[`sauvegardes corrompues (comportement actuel) > JSON corrompu : comportement actuel figé (parser fragile) 1`] = `"SyntaxError"`;

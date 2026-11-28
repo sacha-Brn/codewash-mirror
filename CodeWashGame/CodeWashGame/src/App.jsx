@@ -19,6 +19,7 @@ import AchievementToast from './components/ui/AchievementToast';
 // Utils & Constants
 import { getRandomMob, getRandomFriendlyMob, getRandomMiniboss, getRandomBoss, getMobForSkill, getEncounterType, generateMathProblem, getReadingWord, getWordForDifficulty, calculateDamage, calculateMobHealth, calculateXPReward, calculateXPToLevel } from './utils/gameUtils';
 import { getRandomAura } from './utils/mobDisplayUtils';
+import { readJSON, readProfileSave, saveKey } from './utils/storage';
 import { 
     BASE_ASSETS, THEME_CONFIG, SKILL_DATA, 
     HOMOPHONES, DIFFICULTY_CONTENT, HOSTILE_MOBS, BOSS_MOBS, MINIBOSS_MOBS
@@ -48,11 +49,11 @@ const BOSS_HEALING_ANIMATION_DURATION = 600;
 
 const App = () => {
     const [currentProfile, setCurrentProfile] = useState(() => localStorage.getItem('currentProfile_v1') ? parseInt(localStorage.getItem('currentProfile_v1')) : 1);
-    const [profileNames, setProfileNames] = useState(() => localStorage.getItem('heroProfileNames_v1') ? JSON.parse(localStorage.getItem('heroProfileNames_v1')) : { 1: "Player 1", 2: "Player 2", 3: "Player 3" });
-    const [parentStatus, setParentStatus] = useState(() => localStorage.getItem('heroParentStatus_v1') ? JSON.parse(localStorage.getItem('heroParentStatus_v1')) : { 1: false, 2: false, 3: false });
+    const [profileNames, setProfileNames] = useState(() => readJSON('heroProfileNames_v1', { 1: "Player 1", 2: "Player 2", 3: "Player 3" })); // DEBT-02
+    const [parentStatus, setParentStatus] = useState(() => readJSON('heroParentStatus_v1', { 1: false, 2: false, 3: false })); // DEBT-02
     const [playerHealth, setPlayerHealth] = useState(10);
     
-    const getStorageKey = (profileId) => `heroSkills_v23_p${profileId}`;
+    const getStorageKey = (profileId) => saveKey(profileId);
     const loadSkills = (profileId) => {
         const initial = {};
         // Initialize each skill with level, xp, currentMob, difficulty (1-7), earnedBadges array,
@@ -85,11 +86,10 @@ const App = () => {
                 currentBossAura: getRandomAura() // Aura for boss encounters
             }; 
         });
-        let saved = localStorage.getItem(getStorageKey(profileId));
-        if (!saved && profileId === 1) saved = localStorage.getItem('heroSkills_v23');
+        // DEBT-01 : readProfileSave copie une sauvegarde illisible avant qu'elle soit écrasée.
+        const parsed = readProfileSave(profileId);
         try { 
-            if (saved) { 
-                const parsed = JSON.parse(saved); 
+            if (parsed) { 
                 const data = parsed.skills || parsed; 
                 Object.keys(data).forEach(key => { 
                     initial[key] = { ...initial[key], ...data[key] };
@@ -169,32 +169,17 @@ const App = () => {
         }
         return initial;
     };
+    // DEBT-03 : l'absence de sauvegarde n'est plus détectée par une exception.
     const loadTheme = (profileId) => {
-        let saved = localStorage.getItem(getStorageKey(profileId));
-        if (!saved && profileId === 1) {
-            saved = localStorage.getItem('heroSkills_v23');
-        }
-        try {
-            return JSON.parse(saved).theme || 'minecraft';
-        } catch (e) {
-            console.warn('Failed to parse theme:', e);
-        }
-        return 'minecraft';
+        const save = readProfileSave(profileId);
+        return (save && save.theme) || 'minecraft';
     };
     
     const loadStats = (profileId) => {
-        let saved = localStorage.getItem(getStorageKey(profileId));
-        if (!saved && profileId === 1) {
-            saved = localStorage.getItem('heroSkills_v23');
-        }
-        try {
-            const data = JSON.parse(saved);
-            if (data.stats) {
-                // Merge with default stats to ensure all fields exist
-                return { ...getDefaultStats(), ...data.stats };
-            }
-        } catch (e) {
-            console.warn('Failed to parse stats:', e);
+        const data = readProfileSave(profileId);
+        if (data && data.stats) {
+            // Merge with default stats to ensure all fields exist
+            return { ...getDefaultStats(), ...data.stats };
         }
         return getDefaultStats();
     };
@@ -216,12 +201,9 @@ const App = () => {
             return { totalLevel, highestLevel, skills: liveSkills, theme: activeTheme };
         }
         
-        const key = getStorageKey(id);
-        let saved = localStorage.getItem(key);
-        if (!saved && id === 1) saved = localStorage.getItem('heroSkills_v23');
-        if (!saved) return null;
+        const data = readProfileSave(id);
+        if (!data) return null;
         try {
-            const data = JSON.parse(saved);
             const skillsData = data.skills || data;
             const theme = data.theme || 'minecraft';
             let totalLevel = 0;
