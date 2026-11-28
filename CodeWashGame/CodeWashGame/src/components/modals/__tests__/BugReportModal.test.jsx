@@ -177,16 +177,14 @@ describe('BugReportModal', () => {
 
   it('services par défaut : rapport réel construit et envoyé au serveur configuré', async () => {
     localStorage.setItem('currentProfile_v1', '1');
-    const fetchSpy = vi
-      .spyOn(globalThis, 'fetch')
-      .mockImplementation(async (url) =>
-        url === 'bug-report.config.json'
-          ? {
-              ok: true,
-              json: async () => ({ contactEmail: '', endpoint: 'http://serveur/bug-reports' }),
-            }
-          : { ok: true, status: 201 },
-      );
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) =>
+      url === 'bug-report.config.json'
+        ? {
+            ok: true,
+            json: async () => ({ contactEmail: '', endpoint: 'http://serveur/bug-reports' }),
+          }
+        : { ok: true, status: 201 },
+    );
     render(<BugReportModal isOpen onClose={() => {}} />);
     await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
     typeDescription('Le jeu plante au démarrage');
