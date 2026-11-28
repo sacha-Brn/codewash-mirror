@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
-    Menu, Sparkles, Gift, Maximize, Minimize, Settings, Bug
+    Menu, Sparkles, Gift, Maximize, Minimize, Settings, Bug, Brain
 } from 'lucide-react';
 
 // Modules
@@ -9,6 +9,7 @@ import SafeImage from './components/ui/SafeImage';
 import PixelHeart from './components/ui/PixelHeart';
 import ResetModal from './components/modals/ResetModal';
 import BugReportModal from './components/modals/BugReportModal';
+import TriviaGame from './components/trivia/TriviaGame';
 import SettingsDrawer from './components/drawers/SettingsDrawer';
 import CosmeticsDrawer from './components/drawers/CosmeticsDrawer';
 import MenuDrawer from './components/drawers/MenuDrawer';
@@ -252,6 +253,7 @@ const App = () => {
     const [isCosmeticsOpen, setIsCosmeticsOpen] = useState(false);
     const [isResetOpen, setIsResetOpen] = useState(false);
     const [isBugReportOpen, setIsBugReportOpen] = useState(false);
+    const [isTriviaOpen, setIsTriviaOpen] = useState(false); // Trivia : mini-jeu autonome (docs/TRIVIA.md)
     const [isListening, setIsListening] = useState(false);
     const [spokenText, setSpokenText] = useState("");
     const [damageNumbers, setDamageNumbers] = useState([]);
@@ -1270,6 +1272,7 @@ const App = () => {
             />
             <ResetModal isOpen={isResetOpen} onClose={() => setIsResetOpen(false)} onConfirm={handleReset} />
             <BugReportModal isOpen={isBugReportOpen} onClose={() => setIsBugReportOpen(false)} />
+            <TriviaGame isOpen={isTriviaOpen} onClose={() => setIsTriviaOpen(false)} />
             
             {/* Top Right Buttons */}
             {/* Button dimensions: p-3 (12px) + icon(48px) + p-3 (12px) + border-2*2 (4px) = 76px + 8px gap = 84px spacing */}
@@ -1299,6 +1302,16 @@ const App = () => {
             )}
             <MenuDrawer isOpen={isMenuOpen} skills={skills} stats={stats} />
             
+            {/* Bottom Right Trivia Button (above the bug report button) */}
+            <button 
+                onClick={() => { setIsMenuOpen(false); setIsCosmeticsOpen(false); setIsSettingsOpen(false); setIsTriviaOpen(true); playClick(); }} 
+                aria-label="Trivia"
+                className="absolute z-40 bg-stone-800/90 text-white p-3 rounded-lg border-2 border-stone-600 hover:bg-stone-700 transition-all shadow-lg" 
+                style={{ bottom: '112px', right: '24px' }}
+            >
+                <Brain size={48} className="text-purple-400" />
+            </button>
+
             {/* Bottom Right Bug Report Button */}
             <button 
                 onClick={() => { setIsMenuOpen(false); setIsCosmeticsOpen(false); setIsSettingsOpen(false); setIsBugReportOpen(true); playClick(); }} 
