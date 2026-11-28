@@ -50,6 +50,7 @@ npm ci            # installe exactement les versions du package-lock.json
 | Tests | `npm test` | tous les tests Vitest, une fois |
 | Tests + couverture | `npm run test:coverage` | tableau dans le terminal + `coverage/index.html` |
 | Tests en continu | `npx vitest` | relance les tests à chaque sauvegarde |
+| Serveur de réception des rapports de bug | `npm run bug-report-server` | http://localhost:8787/bug-reports |
 
 ### Spécificités par système
 
@@ -105,6 +106,12 @@ la cible Windows. Le plus simple est de passer par une machine Windows ou par la
     │   └── **/__tests__/         # tests, à côté du code testé
     └── docs/MICROPHONE_FEATURE.md
 ```
+
+## Fonctionnalités et guides
+
+| Fonctionnalité | Guide |
+|---|---|
+| Signaler un bug (bouton **Bug** du menu) : configuration du contact, réception, tests | [`docs/BUG_REPORTING.md`](docs/BUG_REPORTING.md) |
 
 ## Où sont les données du joueur ?
 
