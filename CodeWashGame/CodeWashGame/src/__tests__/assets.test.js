@@ -46,8 +46,7 @@ describe('assets référencés dans le code', () => {
     'assets/items/health_potion.png',
     'assets/items/mana_potion.png',
     'assets/items/sword.png',
-    // DEBT-11 : BASE_ASSETS.audio (gameData.jsx). Seuls match et mismatch sont utilisés
-    // (jeu Memory, SkillCard.jsx) : ces deux sons ne jouent jamais.
+    // DEBT-12 : entrées inutilisées de BASE_ASSETS.audio (gameData.jsx), code mort.
     'assets/sounds/bgm_1.wav',
     'assets/sounds/click.wav',
     'assets/sounds/damage.wav',
@@ -55,18 +54,7 @@ describe('assets référencés dans le code', () => {
     'assets/sounds/faint.wav',
     'assets/sounds/hit_1.wav',
     'assets/sounds/levelup.wav',
-    'assets/sounds/match_success.wav',
-    'assets/sounds/mismatch.wav',
     'assets/sounds/success.wav',
-    // DEBT-11 : soundManager.js attend sounds/ui/*.wav, les fichiers sont dans sounds/ui/ui/.
-    'assets/sounds/ui/actioncard_left.wav',
-    'assets/sounds/ui/actioncard_right.wav',
-    'assets/sounds/ui/click.wav',
-    'assets/sounds/ui/death.wav',
-    'assets/sounds/ui/fail.wav',
-    'assets/sounds/ui/levelup.wav',
-    'assets/sounds/ui/notification.wav',
-    'assets/sounds/ui/successful_hit.wav',
     // DEBT-09 : visuels de thème jamais fournis avec le projet.
     'assets/themes/kpop_memorycard.jpg',
     'assets/themes/pokemon_memorycard.jpg',
@@ -80,5 +68,19 @@ describe('assets référencés dans le code', () => {
   it('tous les fichiers référencés existent dans public/ (hors manquants connus)', () => {
     const missing = assets.filter((p) => !existsSync(join(PUBLIC, p)));
     expect(missing).toEqual(KNOWN_MISSING);
+  });
+
+  // DEBT-11 (corrigé) : les sons de monstres étaient dans sounds/mob/mob/<monstre>/.
+  it('chaque dossier de sons de monstre attendu par soundManager existe', () => {
+    const source = readFileSync(join(SRC, 'utils', 'soundManager.js'), 'utf-8');
+    const map = source.slice(
+      source.indexOf('MOB_FOLDER_MAP = {'),
+      source.indexOf('};', source.indexOf('MOB_FOLDER_MAP = {')),
+    );
+    const folders = [...new Set([...map.matchAll(/:\s*'([a-z_]+)'/g)].map(([, f]) => f))];
+    expect(folders.length).toBeGreaterThan(20);
+    const missing = folders.filter((f) => !existsSync(join(PUBLIC, 'assets/sounds/mob', f))).sort();
+    // Dette restante (DEBT-11) : aucun son fourni pour ces monstres.
+    expect(missing).toEqual(['creaking', 'warden', 'witch']);
   });
 });
