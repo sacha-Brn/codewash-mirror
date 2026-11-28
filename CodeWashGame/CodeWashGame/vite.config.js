@@ -14,17 +14,18 @@ export default defineConfig({
       // json-summary + json : rapport publié dans les PR par la CI
       reporter: ['text', 'html', 'lcov', 'json-summary', 'json'],
       reportOnFailure: true,
-      include: ['src/**/*.{js,jsx}'],
-      exclude: ['src/**/__tests__/**', 'src/test/**'],
+      include: ['src/**/*.{js,jsx}', 'scripts/**/*.js'],
+      exclude: ['**/__tests__/**', 'src/test/**'],
       // Quality gate : `npm run test:coverage` échoue sous ces seuils.
       // Règle : on ne les baisse JAMAIS (sinon, entrée dans docs/DEBT.md) ;
       // on les remonte quand la couverture progresse.
-      // Base mesurée le 2026-11-27 : stmts 47.6 %, branches 44.8 %, funcs 40.7 %, lignes 50.0 %.
+      // Historique : 2026-11-27 base stmts 47.6 / branches 44.8 / funcs 40.7 / lignes 50.0 ;
+      // 2026-11-28 (Bug Reporting) stmts 53.0 / branches 49.3 / funcs 48.0 / lignes 55.2.
       thresholds: {
-        statements: 45,
-        branches: 42,
-        functions: 38,
-        lines: 47,
+        statements: 50,
+        branches: 46,
+        functions: 45,
+        lines: 52,
       },
     },
   },
