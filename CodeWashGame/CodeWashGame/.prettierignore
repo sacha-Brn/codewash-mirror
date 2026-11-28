@@ -22,7 +22,6 @@ src/components/drawers/CosmeticsDrawer.jsx
 src/components/drawers/MenuDrawer.jsx
 src/components/drawers/MenuDrawer_old.jsx
 src/components/drawers/SettingsDrawer.jsx
-src/components/modals/BugReportModal.jsx
 src/components/modals/ResetModal.jsx
 src/components/PhantomEvent.jsx
 src/components/profile/ProfileCard.jsx
@@ -37,7 +36,6 @@ src/constants/achievements.js
 src/constants/assets.js
 src/constants/gameData.jsx
 src/index.css
-src/main.jsx
 src/utils/achievementUtils.js
 src/utils/gameUtils.js
 src/utils/mobDisplayUtils.js

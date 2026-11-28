@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
 
 let mainWindow;
@@ -18,6 +18,13 @@ function createWindow() {
 
   // Load the built game
   mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
+
+  // Bug reporting: open mailto: links in the user's e-mail client instead of a new window.
+  // Every other window.open() is blocked.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('mailto:')) shell.openExternal(url);
+    return { action: 'deny' };
+  });
 
   // Prevent opening developer tools in production for a cleaner experience
   if (app.isPackaged) {
