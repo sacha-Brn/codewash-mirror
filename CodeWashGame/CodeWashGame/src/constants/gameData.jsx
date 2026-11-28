@@ -202,7 +202,7 @@ export const THEME_CONFIG = {
     },
     'spy': {
         name: 'Spy', 
-		style: { backgroundImage: `url('assets/themes/minecraft.png')`, backgroundSize: 'cover', backgroundPosition: 'center' },
+		style: { backgroundImage: `url('assets/themes/spy.png')`, backgroundSize: 'cover', backgroundPosition: 'center' },
         assets: { 
 			logo: 'assets/themes/spy_logo.png', cardBack: 'assets/themes/spy_memorycard.jpg', 
 			mobs: {} 
