@@ -19,3 +19,6 @@ npm-debug.log*
 !.vscode/extensions.json
 .idea/
 *.swp
+
+# Rapports de bug reçus par le serveur local (npm run bug-report-server)
+bug-reports/

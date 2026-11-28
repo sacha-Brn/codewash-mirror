@@ -16,6 +16,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "preview": "vite preview",
+    "bug-report-server": "node scripts/bug-report-server.js",
     "electron:dev": "npm run build && electron .",
     "electron:build": "npm run build && electron-builder"
   },
