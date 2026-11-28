@@ -29,8 +29,44 @@ Les chemins de code sont relatifs à `CodeWashGame/CodeWashGame/`.
 
 ## 2. Métriques de départ
 
-> _À compléter **avant tout refactoring** : couverture, complexité cyclomatique, duplication,
-> taille des fichiers, avec les outils et commandes utilisés pour pouvoir reproduire la mesure._
+Mesures prises sur le **code tel que reçu** (commit `afd0585`), avant tout refactoring.
+Pour les reproduire : `git worktree add /tmp/orig afd0585`, puis lancer les commandes depuis
+`/tmp/orig/CodeWashGame/CodeWashGame` (lien symbolique vers un `node_modules` installé pour ESLint).
+
+| Métrique | Valeur de départ | Outil et commande |
+|---|---|---|
+| Couverture de tests | **0 %** (aucun test) | `npm run test:coverage` (Vitest + v8) |
+| Lignes de code (hors blancs et commentaires) | **5 832** dans 27 fichiers (JSX 4 885, JS 903) | `npx cloc@2 src electron` |
+| Duplication | **5,95 %** : 9 clones, 324 lignes dupliquées | `npx jscpd@4 src --min-tokens 50` |
+| Complexité cyclomatique | 396 fonctions, moyenne 2,8 ; **14 fonctions > 10**, **5 > 20** | `npx eslint src --rule '{"complexity":["warn",0]}' -f json` |
+| Poids des assets | **242 Mo** dont **191 Mo de musique WAV** (`sounds/bgm`, 6 fichiers de 12 à 50 Mo) ; 16 fichiers > 1 Mo | `du -sh public/assets/*` |
+| Bundle JS / CSS (build) | 362,8 Ko (102,6 Ko gzip) / 61,8 Ko (11,1 Ko gzip) | `npm run build` |
+| Lint | 0 erreur (avertissements : voir commit `0158141`) | `npm run lint` |
+| Format | 34 fichiers sur 34 non conformes à Prettier | `npx prettier --check .` |
+
+**Fichiers les plus gros**
+
+| Fichier | Lignes |
+|---|---|
+| `src/App.jsx` | 1 492 |
+| `src/components/ui/GlobalStyles.jsx` | 1 302 |
+| `src/components/skills/SkillCard.jsx` | 778 |
+| `src/constants/gameData.jsx` | 416 |
+
+**Fonctions les plus complexes** (complexité cyclomatique ; au-delà de 10, une fonction est considérée comme difficile à tester)
+
+| Complexité | Emplacement |
+|---|---|
+| **107** | `src/components/skills/SkillCard.jsx:65` (composant `SkillCard` entier) |
+| 31 | `src/App.jsx:94` (fusion de la sauvegarde dans `loadSkills`) |
+| 27 | `src/components/drawers/MenuDrawer.jsx:142` |
+| 24 | `src/App.jsx:569` |
+| 21 | `src/components/drawers/CosmeticsDrawer.jsx:108` |
+| 17 | `src/App.jsx:444` |
+| 16 | `src/App.jsx:49` (composant `App`) et `src/App.jsx:1387` |
+
+Ces chiffres servent de point de comparaison : on les remesure après chaque refactoring important
+(section « Historique »).
 
 ## 3. Matrice des risques et plan d'attaque
 
